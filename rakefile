@@ -1,0 +1,25 @@
+require 'rake/testtask'
+
+task :generate_certificates do
+  sh 'ruby ca_generator.rb'
+  sh 'ruby certificate_generator.rb'
+end
+
+task :start_server do
+  sh 'ruby web_server.rb &'
+  sleep 2
+end
+
+task :test_connection do
+  sh 'ruby test_connection.rb'
+end
+
+task :test => [:generate_certificates, :start_server, :test_connection] do
+  puts 'All tests passed!'
+end
+
+task :clean_up do
+  sh 'pkill -f "ruby app.rb"'
+end
+
+task :default => [:test, :clean_up]
